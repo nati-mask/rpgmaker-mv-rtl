@@ -1409,11 +1409,12 @@ Window_Command.prototype.drawItem = function(index) {
     var align = this.itemTextAlign();
     this.resetTextColor();
     this.changePaintOpacity(this.isCommandEnabled(index));
-    this.drawText(this.commandName(index), rect.x, rect.y, rect.width, align);
+    // This draws main menu text:
+    this.drawText(this.commandName(index), rect.width + this.textPadding(), rect.y - this.textPadding() / 2, rect.width, align);
 };
 
 Window_Command.prototype.itemTextAlign = function() {
-    return 'left';
+    return 'right';
 };
 
 Window_Command.prototype.isOkEnabled = function() {
