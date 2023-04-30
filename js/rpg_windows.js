@@ -323,9 +323,9 @@ Window_Base.prototype.processCharacter = function(textState) {
 
 Window_Base.prototype.processNormalCharacter = function(textState) {
     var c = textState.text[textState.index++];
-    var w = this.textWidth(c);
-    this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height);
-    textState.x += w;
+    var w = this.textWidth(c) + 2;
+    this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height, 'right');
+    textState.x -= w;
 };
 
 Window_Base.prototype.processNewLine = function(textState) {
@@ -4493,7 +4493,7 @@ Window_Message.prototype.drawMessageFace = function() {
 };
 
 Window_Message.prototype.newLineX = function() {
-    return $gameMessage.faceName() === '' ? 0 : 168;
+    return $gameMessage.faceName() === '' ? 0 : (this.windowWidth() - this.standardPadding() * 2 - this.textPadding());
 };
 
 Window_Message.prototype.processNewLine = function(textState) {
