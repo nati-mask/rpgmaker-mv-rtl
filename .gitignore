@@ -3,5 +3,6 @@ audio/
 data/
 movies/
 icon/
+save/
 fonts/*.ttf
 js/plugins.js
