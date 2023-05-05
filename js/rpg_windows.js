@@ -606,9 +606,9 @@ Window_Base.prototype.drawItemName = function(item, x, y, width) {
 Window_Base.prototype.drawCurrencyValue = function(value, unit, x, y, width) {
     var unitWidth = Math.min(80, this.textWidth(unit));
     this.resetTextColor();
-    this.drawText(value, x, y, width - unitWidth - 6, 'right');
+    this.drawText(value, x, y, width - unitWidth - 6);
     this.changeTextColor(this.systemColor());
-    this.drawText(unit, x + width - unitWidth, y, unitWidth, 'right');
+    this.drawText(unit, x + width - unitWidth, y, unitWidth);
 };
 
 Window_Base.prototype.paramchangeTextColor = function(change) {
