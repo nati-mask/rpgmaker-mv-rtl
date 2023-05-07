@@ -860,7 +860,7 @@ Window_Selectable.prototype.itemRect = function(index) {
     var maxCols = this.maxCols();
     rect.width = this.itemWidth();
     rect.height = this.itemHeight();
-    rect.x = index % maxCols * (rect.width + this.spacing()) - this._scrollX;
+    rect.x = (maxCols - 1 - index) % maxCols * (rect.width + this.spacing()) - this._scrollX;
     rect.y = Math.floor(index / maxCols) * rect.height - this._scrollY;
     return rect;
 };
@@ -930,7 +930,7 @@ Window_Selectable.prototype.cursorUp = function(wrap) {
     }
 };
 
-Window_Selectable.prototype.cursorRight = function(wrap) {
+Window_Selectable.prototype.cursorLeft = function(wrap) {
     var index = this.index();
     var maxItems = this.maxItems();
     var maxCols = this.maxCols();
@@ -939,7 +939,7 @@ Window_Selectable.prototype.cursorRight = function(wrap) {
     }
 };
 
-Window_Selectable.prototype.cursorLeft = function(wrap) {
+Window_Selectable.prototype.cursorRight = function(wrap) {
     var index = this.index();
     var maxItems = this.maxItems();
     var maxCols = this.maxCols();
