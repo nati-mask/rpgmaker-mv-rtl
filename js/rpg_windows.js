@@ -1409,8 +1409,8 @@ Window_Command.prototype.drawItem = function(index) {
     var align = this.itemTextAlign();
     this.resetTextColor();
     this.changePaintOpacity(this.isCommandEnabled(index));
-    // This draws main menu text:
-    this.drawText(this.commandName(index), rect.width + this.textPadding(), rect.y - this.textPadding() / 2, rect.width, align);
+    // This draws command menu text, can be vertical or horizontal:
+    this.drawText(this.commandName(index), rect.x + rect.width, rect.y - this.textPadding() / 2, rect.width, align);
 };
 
 Window_Command.prototype.itemTextAlign = function() {

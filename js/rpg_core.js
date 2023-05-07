@@ -1338,7 +1338,7 @@ Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
         var alpha = context.globalAlpha;
         maxWidth = maxWidth || 0xffffffff;
         if (align === 'center') {
-            tx += maxWidth / 2;
+            tx -= maxWidth / 2;
         }
         // if (align === 'right') {
         //     tx += maxWidth;
