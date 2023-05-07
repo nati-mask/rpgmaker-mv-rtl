@@ -598,8 +598,8 @@ Window_Base.prototype.drawItemName = function(item, x, y, width) {
     if (item) {
         var iconBoxWidth = Window_Base._iconWidth + 4;
         this.resetTextColor();
-        this.drawIcon(item.iconIndex, x + 2, y + 2);
-        this.drawText(item.name, x + iconBoxWidth, y, width - iconBoxWidth);
+        this.drawIcon(item.iconIndex, x + width - Window_Base._iconWidth, y + 2);
+        this.drawText(item.name, x + width - iconBoxWidth, y, width - iconBoxWidth, 'right');
     }
 };
 
@@ -1503,7 +1503,7 @@ Window_Help.prototype.setItem = function(item) {
 
 Window_Help.prototype.refresh = function() {
     this.contents.clear();
-    this.drawTextEx(this._text, this.textPadding(), 0);
+    this.drawTextEx(this._text, this._width - this.standardPadding() * 2 - this.textPadding(), 0);
 };
 
 //-----------------------------------------------------------------------------
@@ -1984,11 +1984,10 @@ Window_ItemList.prototype.selectLast = function() {
 Window_ItemList.prototype.drawItem = function(index) {
     var item = this._data[index];
     if (item) {
-        var numberWidth = this.numberWidth();
         var rect = this.itemRect(index);
         rect.width -= this.textPadding();
         this.changePaintOpacity(this.isEnabled(item));
-        this.drawItemName(item, rect.x, rect.y, rect.width - numberWidth);
+        this.drawItemName(item, rect.x, rect.y, rect.width);
         this.drawItemNumber(item, rect.x, rect.y, rect.width);
         this.changePaintOpacity(1);
     }
@@ -2000,8 +1999,8 @@ Window_ItemList.prototype.numberWidth = function() {
 
 Window_ItemList.prototype.drawItemNumber = function(item, x, y, width) {
     if (this.needsNumber()) {
-        this.drawText(':', x, y, width - this.textWidth('00'), 'right');
-        this.drawText($gameParty.numItems(item), x, y, width, 'right');
+        this.drawText(':', x + this.textPadding() + this.textWidth('00'), y);
+        this.drawText($gameParty.numItems(item), x + this.textPadding(), y);
     }
 };
 
