@@ -4493,7 +4493,7 @@ Window_Message.prototype.drawMessageFace = function() {
 };
 
 Window_Message.prototype.newLineX = function() {
-    return $gameMessage.faceName() === '' ? 0 : (this.windowWidth() - this.standardPadding() * 2 - this.textPadding());
+    return this.windowWidth() - this.standardPadding() * 2 - this.textPadding();
 };
 
 Window_Message.prototype.processNewLine = function(textState) {
