@@ -860,7 +860,7 @@ Window_Selectable.prototype.itemRect = function(index) {
     var maxCols = this.maxCols();
     rect.width = this.itemWidth();
     rect.height = this.itemHeight();
-    rect.x = (maxCols - 1 - index) % maxCols * (rect.width + this.spacing()) - this._scrollX;
+    rect.x = (maxCols - 1 - index % maxCols) * (rect.width + this.spacing()) - this._scrollX;
     rect.y = Math.floor(index / maxCols) * rect.height - this._scrollY;
     return rect;
 };
