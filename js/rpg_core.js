@@ -1337,12 +1337,15 @@ Bitmap.prototype.drawText = function(text, x, y, maxWidth, lineHeight, align) {
         var context = this._context;
         var alpha = context.globalAlpha;
         maxWidth = maxWidth || 0xffffffff;
+
+        // Don't change these for RTL:
         if (align === 'center') {
-            tx -= maxWidth / 2;
+            tx += maxWidth / 2;
         }
-        // if (align === 'right') {
-        //     tx += maxWidth;
-        // }
+        if (align === 'right') {
+            tx += maxWidth;
+        }
+
         context.save();
         context.font = this._makeFontNameText();
         context.textAlign = align;

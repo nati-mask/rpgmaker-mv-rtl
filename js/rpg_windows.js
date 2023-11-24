@@ -262,6 +262,8 @@ Window_Base.prototype.textWidth = function(text) {
 
 Window_Base.prototype.drawTextEx = function(text, x, y) {
     if (text) {
+        // This is called to process special characters,
+        // not for speech. Probably you should adjust "x" for RTL before each call.
         var textState = { index: 0, x: x, y: y, left: x };
         textState.text = this.convertEscapeCharacters(text);
         textState.height = this.calcTextHeight(textState, false);
@@ -323,8 +325,8 @@ Window_Base.prototype.processCharacter = function(textState) {
 
 Window_Base.prototype.processNormalCharacter = function(textState) {
     var c = textState.text[textState.index++];
-    var w = this.textWidth(c) + 2;
-    this.contents.drawText(c, textState.x, textState.y, w * 2, textState.height, 'right');
+    var w = this.textWidth(c) + 2; // TODO: This addition has to be parametric acc to the font
+    this.contents.drawText(c, textState.x - w * 2, textState.y, w * 2, textState.height, 'right');
     textState.x -= w;
 };
 
@@ -597,9 +599,10 @@ Window_Base.prototype.drawItemName = function(item, x, y, width) {
     width = width || 312;
     if (item) {
         var iconBoxWidth = Window_Base._iconWidth + 4;
+        console.log('Drawing inventory item name:', item.name, 'Icon width:', iconBoxWidth);
         this.resetTextColor();
         this.drawIcon(item.iconIndex, x + width - Window_Base._iconWidth, y + 2);
-        this.drawText(item.name, x + width - iconBoxWidth, y, width - iconBoxWidth, 'right');
+        this.drawText(item.name, x, y, width - iconBoxWidth, 'right');
     }
 };
 
@@ -862,6 +865,7 @@ Window_Selectable.prototype.itemRect = function(index) {
     rect.height = this.itemHeight();
     rect.x = (maxCols - 1 - index % maxCols) * (rect.width + this.spacing()) - this._scrollX;
     rect.y = Math.floor(index / maxCols) * rect.height - this._scrollY;
+    console.log('Drawing select item rect:', rect);
     return rect;
 };
 
@@ -1410,7 +1414,8 @@ Window_Command.prototype.drawItem = function(index) {
     this.resetTextColor();
     this.changePaintOpacity(this.isCommandEnabled(index));
     // This draws command menu text, can be vertical or horizontal:
-    this.drawText(this.commandName(index), rect.x + rect.width, rect.y - this.textPadding() / 2, rect.width, align);
+    console.log('Drawing command:', align, this.commandName(index));
+    this.drawText(this.commandName(index), rect.x, rect.y - this.textPadding() / 2, rect.width, align);
 };
 
 Window_Command.prototype.itemTextAlign = function() {
@@ -1502,7 +1507,9 @@ Window_Help.prototype.setItem = function(item) {
 };
 
 Window_Help.prototype.refresh = function() {
+    // Window "help" is the top bar explaining item etc.
     this.contents.clear();
+    console.log('Drawing help:', this._text);
     this.drawTextEx(this._text, this._width - this.standardPadding() * 2 - this.textPadding(), 0);
 };
 
