@@ -500,13 +500,13 @@ Window_Base.prototype.drawActorFace = function(actor, x, y, width, height) {
 Window_Base.prototype.drawActorName = function(actor, x, y, width) {
     width = width || 168;
     this.changeTextColor(this.hpColor(actor));
-    this.drawText(actor.name(), x, y, width);
+    this.drawText(actor.name(), x, y, width, 'right');
 };
 
 Window_Base.prototype.drawActorClass = function(actor, x, y, width) {
     width = width || 168;
     this.resetTextColor();
-    this.drawText(actor.currentClass().name, x, y, width);
+    this.drawText(actor.currentClass().name, x, y, width, 'right');
 };
 
 Window_Base.prototype.drawActorNickname = function(actor, x, y, width) {
@@ -515,11 +515,12 @@ Window_Base.prototype.drawActorNickname = function(actor, x, y, width) {
     this.drawText(actor.nickname(), x, y, width);
 };
 
-Window_Base.prototype.drawActorLevel = function(actor, x, y) {
+Window_Base.prototype.drawActorLevel = function(actor, x, y, width) {
+    width = width || 168;
     this.changeTextColor(this.systemColor());
-    this.drawText(TextManager.levelA, x, y, 48);
+    this.drawText(TextManager.levelA, x, y, width, 'right');
     this.resetTextColor();
-    this.drawText(actor.level, x + 84, y, 36, 'right');
+    this.drawText(actor.level, x + 84, y, 36);
 };
 
 Window_Base.prototype.drawActorIcons = function(actor, x, y, width) {
@@ -532,13 +533,14 @@ Window_Base.prototype.drawActorIcons = function(actor, x, y, width) {
 
 Window_Base.prototype.drawCurrentAndMax = function(current, max, x, y,
                                                    width, color1, color2) {
-    var labelWidth = this.textWidth('HP');
+    var labelWidth = this.textWidth('XXXX'); // Was hardcode "HP"...
     var valueWidth = this.textWidth('0000');
     var slashWidth = this.textWidth('/');
-    var x1 = x + width - valueWidth;
+    var boxWidth = 2 * valueWidth + slashWidth;
+    var x1 = x + boxWidth - valueWidth;
     var x2 = x1 - slashWidth;
     var x3 = x2 - valueWidth;
-    if (x3 >= x + labelWidth) {
+    if (boxWidth <= width - labelWidth) {
         this.changeTextColor(color1);
         this.drawText(current, x3, y, valueWidth, 'right');
         this.changeTextColor(color2);
@@ -556,7 +558,7 @@ Window_Base.prototype.drawActorHp = function(actor, x, y, width) {
     var color2 = this.hpGaugeColor2();
     this.drawGauge(x, y, width, actor.hpRate(), color1, color2);
     this.changeTextColor(this.systemColor());
-    this.drawText(TextManager.hpA, x, y, 44);
+    this.drawText(TextManager.hpA, x, y, width, 'right');
     this.drawCurrentAndMax(actor.hp, actor.mhp, x, y, width,
                            this.hpColor(actor), this.normalColor());
 };
@@ -567,7 +569,7 @@ Window_Base.prototype.drawActorMp = function(actor, x, y, width) {
     var color2 = this.mpGaugeColor2();
     this.drawGauge(x, y, width, actor.mpRate(), color1, color2);
     this.changeTextColor(this.systemColor());
-    this.drawText(TextManager.mpA, x, y, 44);
+    this.drawText(TextManager.mpA, x, y, width, 'right');
     this.drawCurrentAndMax(actor.mp, actor.mmp, x, y, width,
                            this.mpColor(actor), this.normalColor());
 };
@@ -585,14 +587,15 @@ Window_Base.prototype.drawActorTp = function(actor, x, y, width) {
 
 Window_Base.prototype.drawActorSimpleStatus = function(actor, x, y, width) {
     var lineHeight = this.lineHeight();
-    var x2 = x + 180;
-    var width2 = Math.min(200, width - 180 - this.textPadding());
-    this.drawActorName(actor, x, y);
-    this.drawActorLevel(actor, x, y + lineHeight * 1);
-    this.drawActorIcons(actor, x, y + lineHeight * 2);
-    this.drawActorClass(actor, x2, y);
-    this.drawActorHp(actor, x2, y + lineHeight * 1, width2);
-    this.drawActorMp(actor, x2, y + lineHeight * 2, width2);
+    var width1 = 200;
+    var width2 = Math.min(200, width - width1 - this.textPadding() - Window_Base._faceWidth);
+    var x2 = x + width1 + this.textPadding();
+    this.drawActorClass(actor, x, y, width1);
+    this.drawActorHp(actor, x, y + lineHeight * 1, width1);
+    this.drawActorMp(actor, x, y + lineHeight * 2, width1);
+    this.drawActorLevel(actor, x2, y + lineHeight * 1, width2);
+    this.drawActorIcons(actor, x2, y + lineHeight * 2, width2);
+    this.drawActorName(actor, x2, y, width2);
 };
 
 Window_Base.prototype.drawItemName = function(item, x, y, width) {
@@ -1759,18 +1762,21 @@ Window_MenuStatus.prototype.drawItemBackground = function(index) {
     }
 };
 
+// "Item Image" is the character image...
 Window_MenuStatus.prototype.drawItemImage = function(index) {
     var actor = $gameParty.members()[index];
     var rect = this.itemRect(index);
     this.changePaintOpacity(actor.isBattleMember());
-    this.drawActorFace(actor, rect.x + 1, rect.y + 1, Window_Base._faceWidth, Window_Base._faceHeight);
+    console.log('Drawing character face on MenuStatus (party):', rect, actor);
+    this.drawActorFace(actor, rect.x + 1 + rect.width - Window_Base._faceWidth, rect.y + 1, Window_Base._faceWidth, Window_Base._faceHeight);
     this.changePaintOpacity(true);
 };
 
+// "Item Image" is the character status...
 Window_MenuStatus.prototype.drawItemStatus = function(index) {
     var actor = $gameParty.members()[index];
     var rect = this.itemRect(index);
-    var x = rect.x + 162;
+    var x = rect.x;
     var y = rect.y + rect.height / 2 - this.lineHeight() * 1.5;
     var width = rect.width - x - this.textPadding();
     this.drawActorSimpleStatus(actor, x, y, width);
